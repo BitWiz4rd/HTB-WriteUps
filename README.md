@@ -1,3 +1,3 @@
-# Machines
+# HTB-WriteUps
 
-En este apartado encontrarás todos los write-ups de máquinas de Hack The Box
+En este apartado encontrarás todos los write-ups de Hack The Box
