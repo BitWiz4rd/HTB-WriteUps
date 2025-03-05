@@ -1,5 +1,5 @@
 *_Ignored*
-Machines/*/content
-Machines/*/exploits
-Machines/*/nmap
-Machines/*/scripts
+Machines/**/content/
+Machines/**/exploits/
+Machines/**/nmap/
+Machines/**/scripts/
