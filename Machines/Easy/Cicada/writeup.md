@@ -1,3 +1,5 @@
+# HackTheBox WriteUp - Easy:Cicada
+
 ```python
 PORT      STATE SERVICE       VERSION
 53/tcp    open  domain        Simple DNS Plus
