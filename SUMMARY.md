@@ -5,4 +5,5 @@
     * [Cicada](Machines/Easy/Cicada/writeup.md)
     * [Backdoor](Machines/Easy/Backdoor/writeup.md)
     * [Chemistry](Machines/Easy/Chemistry/writeup.md)
+    * [EscapeTwo](Machines/Easy/EscapeTwo/writeup.md)
       
