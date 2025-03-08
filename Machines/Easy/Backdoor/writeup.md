@@ -1,11 +1,13 @@
-# Backdoor
+# Backdoor - HTB Write-up
+<img src="https://labs.hackthebox.com/storage/avatars/085b46bff51d7bc49ec1ddb6ba8a3d36.png" width="200" height="200">
 
-**Port scan**
+## Initial portscan
 ```
 22/open tcp ssh
 80/open tcp http
 1337 open tcp waste
 ```
+
 ## Port 80 - Wordpress
 
 Navigating to the website redirects to `backdoor.htb`, so add it to `/etc/hosts`

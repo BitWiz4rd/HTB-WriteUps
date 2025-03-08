@@ -1,4 +1,6 @@
-# EscapeTwo
+# EscapeTwo - HTB Write-up
+<img src="https://labs.hackthebox.com/storage/avatars/d5fcf2425893a73cf137284e2de580e1.png" width="200" height="200">
+
 As is common in real life Windows pentests, you will start this box with credentials for the following account:
 - `rose` / `KxEPkKe6R8su`
 

@@ -1,6 +1,8 @@
-# HackTheBox WriteUp - Easy:Cicada
+# Cicada - HTB Write-up
+<img src="https://labs.hackthebox.com/storage/avatars/79616a32a057e5e672dadb51bb96dd04.png" width="200" height="200">
 
-```python
+## Initial portscan
+```shell
 PORT      STATE SERVICE       VERSION
 53/tcp    open  domain        Simple DNS Plus
 88/tcp    open  kerberos-sec  Microsoft Windows Kerberos (server time: 2025-03-05 20:09:38Z)
