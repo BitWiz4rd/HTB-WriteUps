@@ -237,7 +237,6 @@ Certipy v4.8.2 - by Oliver Lyak (ly4k)
 [*] Successfully restored the old Key Credentials for 'ca_svc'
 [*] NT hash for 'ca_svc': 3b181b914e7a9d5508ea1e20bc2b7fce
 ```
-
 - `certipy-ad shadow auto`: We perform a "shadow credentials" attack. It abuses ADCS to add a `Key Credential` to the target user (`ca_svc`), which allows the attacker to authenticate as that user.
 
 #### What Happens During the Attack?
@@ -280,6 +279,7 @@ Certificate Templates
 ```
 
 - ESC4 refers to a misconfiguration where the `Cert Publishers` group (or other low-privileged groups) has excessive permissions (e.g., `Write`, `FullControl`) on a certificate template. This allows members of the group to modify the template and potentially escalate privileges.
+- For exmaple, enable the CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT flag, which allows the requester to specify the Subject Alternative Name (SAN) in the certificate. This can be abused to request a certificate for a high-privileged account (e.g., Domain Admin / Administrator).
 
 ### Modify the vulnerable template
 ```shell
