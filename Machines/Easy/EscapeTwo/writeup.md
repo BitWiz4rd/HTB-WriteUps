@@ -277,7 +277,6 @@ Certificate Templates
     [!] Vulnerabilities
       ESC4                              : 'SEQUEL.HTB\\Cert Publishers' has dangerous permissions
 ```
-
 - ESC4 refers to a misconfiguration where the `Cert Publishers` group (or other low-privileged groups) has excessive permissions (e.g., `Write`, `FullControl`) on a certificate template. This allows members of the group to modify the template and potentially escalate privileges.
 - For exmaple, enable the CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT flag, which allows the requester to specify the Subject Alternative Name (SAN) in the certificate. This can be abused to request a certificate for a high-privileged account (e.g., Domain Admin / Administrator).
 
