@@ -1,4 +1,4 @@
-# Administrator - HTB Write-up
+# Administrator - HTB Write-up (Work in progress)
 <img src="https://labs.hackthebox.com/storage/avatars/9d232b1558b7543c7cb85f2774687363.png" width="200" height="200">
 
 As is common in real life Windows pentests, you will start the Administrator box with credentials for the following account: 

