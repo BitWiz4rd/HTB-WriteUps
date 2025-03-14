@@ -6,5 +6,6 @@
     * [Backdoor](Machines/Easy/Backdoor/writeup.md)
     * [Chemistry](Machines/Easy/Chemistry/writeup.md)
     * [EscapeTwo](Machines/Easy/EscapeTwo/writeup.md)
+    * [UnderPass](Machines/Easy/UnderPass/writeup.md)
   * [Medium](Machines/Medium/README.md)
     * [Cypher](Machines/Medium/Cypher/writeup.md)
