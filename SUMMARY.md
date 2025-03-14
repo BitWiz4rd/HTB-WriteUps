@@ -9,3 +9,4 @@
     * [UnderPass](Machines/Easy/UnderPass/writeup.md)
   * [Medium](Machines/Medium/README.md)
     * [Cypher](Machines/Medium/Cypher/writeup.md)
+    * [Administrator](Machines/Medium/Administrator/writeup.md)
